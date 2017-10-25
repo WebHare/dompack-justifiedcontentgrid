@@ -1,6 +1,6 @@
 {
   "name": "dompack-justifiedcontentgrid",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Dompack Justified Content Grid",
   "main": "src/index.es",
   "scripts": {

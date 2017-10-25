@@ -16,7 +16,6 @@ export class JustifiedContentGrid
     this.options =
       { width:              0
       , height:             0
-      //, direction:          "horizontal" // FIXME: not implemented
 
       , row_height:         256 // used for direction: "horizontal"
       , column_width:       256 // used for direction: "vertical"
@@ -30,11 +29,11 @@ export class JustifiedContentGrid
       // "bestfit" - order in such a way as to get equal sized tracks
       //, ordering:           "keep" // FIXME: not implemented
 
-      // gutter size
       , gutter_x:           2
       , gutter_y:           2
 
       , debug:              false
+      , debug_layout:       false
 
       , fill_last_strip_threshold: 40
       };
@@ -62,18 +61,6 @@ export class JustifiedContentGrid
   refresh()
   {
     this.refreshHorizontal();
-    /*
-    switch(this.options.direction)
-    {
-      case "horizontal":
-        this.refreshHorizontal();
-        break;
-
-      case "vertical":
-        this.refreshVertical();
-        break;
-    }
-    */
   }
 
   refreshHorizontal()
@@ -100,15 +87,26 @@ export class JustifiedContentGrid
       , row = 0
       , ypos = 0;
 
+    this.options.debug = this.options.debug || this.options.debug_layout;
+
     if (this.options.debug)
     {
+      if (console.groupCollapsed)
+        console.groupCollapsed("JustifiedContentGrid refresh");
+      else
+        console.group("JustifiedContentGrid refresh");
+
       console.log(img_count, "images");
-      console.log("strip_width:", strip_width);
-      //console.log(this.items);
+
+      if (!this.options.debug_layout)
+        console.log("You can also use debug_layout for more information.");
     }
 
+    if (this.options.debug_layout)
+      console.log("strip_width:", strip_width);
+
     var maxiterations = 999;
-    var maxrows = 80;
+    var maxrows = 999;
     while(img_idx < img_count && row < maxrows && maxiterations > 0)
     {
       maxiterations--;
@@ -223,7 +221,7 @@ export class JustifiedContentGrid
           row++;
           ypos += strip_height;
 
-          if (this.options.debug)
+          if (this.options.debug_layout)
             console.log(img_idx, "will fill it's own row (panoramic)");
 
           continue;
@@ -233,7 +231,7 @@ export class JustifiedContentGrid
           img_this_strip.push(item);
           column++; // (for debugging or if we want to store the column and row in the array)
 
-          if (this.options.debug)
+          if (this.options.debug_layout)
             console.log(img_idx, "last image but no need to grow (fill_last_strip_threshold lower than empty space");
         }
         else if (grow_if_no_extra_image < shrink_if_extra_image)
@@ -241,7 +239,7 @@ export class JustifiedContentGrid
           // 1. grow the items which fit to fill up all space
           compensatex = grow_if_no_extra_image;
 
-          if (this.options.debug)
+          if (this.options.debug_layout)
             console.log(img_idx, "will distribute", compensatex, "to items in row");
         }
         else // also get the current image into this column
@@ -250,7 +248,7 @@ export class JustifiedContentGrid
           compensatex = -shrink_if_extra_image;
           img_this_strip.push(item);
 
-          if (this.options.debug)
+          if (this.options.debug_layout)
             console.log(img_idx, "will shrink", compensatex, "to make a last image fit in the row");
 
           column++; // (for debugging or if we want to store the column and row in the array)
@@ -258,7 +256,7 @@ export class JustifiedContentGrid
         }
       }
 
-      if (this.options.debug)
+      if (this.options.debug_layout)
         console.info("Row #"+row+" contains ", img_this_strip.length, "images");
 
 
@@ -266,7 +264,7 @@ export class JustifiedContentGrid
       var add_each_item = Math.floor(compensatex / column);
       var add_last_item = compensatex - add_each_item * column;
 
-      if (this.options.debug)
+      if (this.options.debug_layout)
       {
         console.info("We need to grow"); //, distributing", compensatex, " over", column, "columns.");
         console.info(
@@ -367,6 +365,12 @@ export class JustifiedContentGrid
 
     this.gridcontainer.style.width = this.options.width+"px";
     this.gridcontainer.style.height = ypos+"px";
+
+    if (this.options.debug)
+    {
+      console.log("The grid consists of", row, "rows");
+      console.groupEnd();
+    }
   }
 
 

@@ -12,36 +12,48 @@ Instructions on usage:
 - specify data-width and data-height attributes to prevent relayout of the page / JustifiedMediaGrid
 - DON'T use "fill" as resize method in the GetCachedImage functions, the JustifiedImageGrid must determine which parts can be cut off
 
-import * as grid from "@webhare-blexdev_jslayout/layout.justifiedcontentgrid";
 
-OR
+Add the required dependency to your package.json:
 
-import { JustifiedContentGrid } from "@webhare-blexdev_jslayout/layout.justifiedcontentgrid";
-
-OR
-
-import { JustifiedImageGrid } from "@webhare-blexdev_jslayout/layout.justifiedcontentgrid";
-
+  "dependencies": {
+    "dompack-justifiedcontentgrid": "https://github.com/WebHare/dompack-justifiedcontentgrid"
+  }
 
 
 # Usage of JustifiedImageGrid
 
-Initializing:
+## Initializing
+
+```
+  import * as grid from "dompack-justifiedcontentgrid";
+
+  // after load event is safe, or use domready and call .refresh after load event
+  var grid = new grid.JustifiedImageGrid(gridnode, options);
+```
+
+OR
+
+```
+import { JustifiedContentGrid } from "dompack-justifiedcontentgrid";
+```
+
+OR
+
+```
+import { JustifiedImageGrid } from "dompack-justifiedcontentgrid";
 
   var grid = new JustifiedImageGrid(gridnode, options);
+```
 
-Updating settings:
+
+### Updating settings:
 (for example upon a resize of the page)
 
-
+```
     grid.setOptions(options);
     grid.refresh();
+```
 
-
-
-# Usage of JustifiedContentGrid
-
-ADDME: documentation
 
 
 # Future plans
