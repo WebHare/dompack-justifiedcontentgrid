@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "@webhare/dompack-justifiedcontentgrid",
   "description": "Dompack Justified Content Grid",
   "main": "src/index.es",
