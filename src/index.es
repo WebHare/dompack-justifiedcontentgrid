@@ -448,12 +448,12 @@ export class JustifiedImageGrid extends JustifiedContentGrid
 
       // 2. otherwise check whether the browsers already has access to at least the size of the image
       if (imgwidth === null)
-        imgwidth = img.width;
+        imgwidth = img.naturalWidth;
       else
         imgwidth = parseInt(imgwidth);
 
       if (imgheight === null)
-        imgheight = img.height;
+        imgheight = img.naturalHeight;
       else
         imgheight = parseInt(imgheight);
 
@@ -476,7 +476,7 @@ export class JustifiedImageGrid extends JustifiedContentGrid
       if (imgwidth == 0 || imgheight == 0)
       {
         this.waitingforimagecount++;
-        img.addEvent("load", this.__onImageLoad.bind(this, imgdesc));
+        img.addEventListener("load", this.__onImageLoad.bind(this, imgdesc));
       }
     };
 
@@ -508,8 +508,11 @@ export class JustifiedImageGrid extends JustifiedContentGrid
       console.log("Updating image size");
 
     var imgnode = evt.target;
-    item_ref.width = imgnode.width;
-    item_ref.height = imgnode.height;
+    item_ref.width = imgnode.naturalWidth;
+    item_ref.height = imgnode.naturalHeight;
+
+    imgnode.dataset.width = item_ref.width;
+    imgnode.dataset.height = item_ref.height;
 
     this.waitingforimagecount--;
     if (this.waitingforimagecount == 0)
@@ -521,9 +524,10 @@ export class JustifiedImageGrid extends JustifiedContentGrid
     else if (!this.newinforefreshtimer)
     {
       // update on a timer to make sure we don't update for every single image
-      this.newinforefreshtimer = this.__forceRefresh.delay(250, this);
+      this.newinforefreshtimer = setTimeout(() => this.__forceRefresh(), 250);
     }
   }
+
   __forceRefresh()
   {
     this.newinforefreshtimer = null;
